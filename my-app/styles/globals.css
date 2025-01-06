@@ -1,0 +1,212 @@
+/* GENERAL */
+
+
+*, *::after,*::before{
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  /* scrollbar-width: none !important; */
+}
+body, p, span, a, button{
+  font-family: "Poppins", sans-serif !important;
+}
+h1, h1 span, h2, h2 span, h3, h3 span, a button {
+  font-family: "hoss-round", sans-serif !important;
+  color: white !important;
+}
+h1, h2, h3 {
+  font-weight: 700 !important;
+}
+a {
+  text-decoration: none;
+}
+ul {
+  list-style: none;
+}
+
+/* BACKGROUND */
+.bg-darker {
+  background-image: url('/assets/background.svg');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+}
+
+/* PADDING + MARGIN */
+footer {
+  margin-top: 37px;
+}
+section {
+  padding: 70px;
+}
+article {
+  padding: 70px 0 0 0;
+}
+.navbar {
+  padding: 20px 70px 20px 70px !important;
+}
+footer .row{
+  padding: 70px 70px 0 70px;
+}
+footer .border-top {
+  margin: 0 70px;
+}
+footer img:not(footer .btn img){
+  margin-bottom: 40px;
+}
+footer h5 {
+  margin-bottom: 20px;
+}
+
+/* NAVBAR */
+.navbar-padding-protection{
+  padding: 80px 0 0 !important;
+}
+
+@media (max-width: 992px) {
+  .navbar-padding-protection{
+    padding: 69px 0 0 !important;
+  } 
+}
+
+
+/* BTN */
+.btn-pink {
+  background-color: #FF1493 !important;
+}
+
+/* GRADIENT EFFECT */
+/* BUTTONS GRADIENT*/
+.div-btn-gradient {
+  padding: 16px 0 !important;
+  color: white !important;
+}
+.btn-gradient, .input-group .btn {
+  padding: 13px 16px !important;
+  border-radius: 18px;
+  border: 0;
+  background: linear-gradient(to right, #FF1493, #224BF4) !important;
+}
+
+/* COLOR GRADIENT */
+.gradient-color {
+  background: linear-gradient(to right, #FF1493, #224BF4);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* BORDER GRADIENT */
+.gradient-border, 
+.gradient-border-all,
+.gradient-border-all-rounder,
+.gradient-border-home, 
+.gradient-border-footer {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  z-index: 1;
+}
+.gradient-border::before, 
+.gradient-border-all::before,
+.gradient-border-all-rounder::before,
+.gradient-border-home::before, 
+.gradient-border-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 2px;
+  background: linear-gradient(to right, #FF1493, #224BF4);
+  -webkit-mask: 
+    linear-gradient(#fff 0%, #fff 100%) content-box, 
+    linear-gradient(#fff 0%, #fff 100%);
+  -webkit-mask-composite: xor; 
+  mask-composite: exclude; 
+  z-index: -1;
+}
+.gradient-border-footer, 
+.gradient-border-footer::before {
+  border-radius: 15px 15px 0 0;
+}
+.gradient-border-all-rounder, 
+.gradient-border-all-rounder::before {
+  border-radius: 15px;
+}
+.gradient-border-all, 
+.gradient-border-all::before {
+  border-radius: 0 !important;
+}
+
+
+/* RESPONSIVE: LARGE SCREENS */
+@media (min-width: 993px) {
+ 
+}
+
+/* RESPONSIVE: MEDIUM SCREENS */
+@media (max-width: 1400px) {
+  
+}
+
+/* RESPONSIVE: SMALLER MEDIUM SCREENS */
+@media (max-width: 992px) {
+  /* TEXTS */
+  h1, h2, h3{
+    font-size: 30px !important;
+  }
+  p {
+    font-size: 14px !important;
+  }
+
+  /* PADDING& MARGIN: SECTION + FOOTER*/
+  section {
+    padding: 20px;
+  }
+  .navbar {
+    padding: 20px !important;
+  }
+  footer .row{
+    padding: 20px 20px 0 20px;
+  }
+  footer .border-top {
+    margin: 0 20px;
+  }
+}
+
+/* RESPONSIVE: SMALL SCREENS */
+@media (max-width: 768px) {
+  /* TEXTS */
+  h1, h2, h3{
+    font-size: 24px !important;
+  }
+  p {
+    font-size: 14px !important;
+  }
+
+  /* CONTAINER */
+  .container {
+    --bs-gutter-x: 0;
+    --bs-gutter-y: 0;
+    padding-right: 0;
+    padding-left: 0;
+    margin-right: auto;
+    margin-left: auto;
+    width: 100%;
+    max-width: 100%;
+  }
+
+  /* BORDERS */
+  .gradient-border::before {
+    background: none !important;
+    border: none !important;
+  }
+  .gradient-border-home::before,
+  .gradient-border-home {
+    border-radius: 0 0 15px 15px;
+  }
+}

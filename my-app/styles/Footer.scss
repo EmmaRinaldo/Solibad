@@ -1,0 +1,68 @@
+// styles/Footer.scss
+footer {
+  h1, h2, h3, h4, h5, p, ul, ol, li, a, a button {
+    color: white !important;
+  }
+
+  /* NEWSLETTER */
+  .input-group {
+    display: flex;
+    max-width: 403px;
+    height: 45px;
+    flex-shrink: 0;
+
+    input {
+      width: 100%;
+      height: 100%;
+      padding: 10px 15px;
+      border-radius: 30px !important;
+    }
+    input::placeholder {
+      color: #545454;
+      font-size: 16px;
+      font-weight: 700;
+      line-height: 36px;
+    }
+    button {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      top: -2px;
+      right: -2px;
+      border-radius: 30px !important;
+      padding: 15px 11px !important;
+      height: 45px;
+    }
+  }
+
+  .input-group input,
+  .input-group input:focus,
+  .input-group {
+    border: 2px solid #545454;
+    background: #222 !important;
+    border-radius: 30px !important;
+    color: white;
+    
+    input,
+    input:focus{ 
+      border: none;
+      box-shadow: none;
+    }
+  }
+}
+
+
+
+
+/* RESPONSIVE: SMALL SCREENS */
+@media (max-width: 768px) {
+  /* NEWSLETTER */
+  .input-group {
+    height: 35px;
+
+    button {
+      padding: 11.725px 8.598px!important;
+      height: 35px;
+    }
+  }
+}

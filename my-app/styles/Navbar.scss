@@ -1,0 +1,59 @@
+// styles/Navbar.scss
+.navbar {
+  background-color: transparent;
+  transition: background-color 0.3s ease;
+  color: white !important;
+}
+
+.navbar.scrolled {
+  background-color: #181a1e;
+}
+
+.navbar {
+
+  &_right {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+
+    &_account {
+      display: flex;
+      align-items: center;
+      border: none;
+      display: flex;
+      gap: 10px;
+      background-color: transparent;
+      cursor: pointer;
+
+      img {
+        width: 40px;
+      }
+    }
+
+    &_accountmenu {
+      position: absolute;
+      background-color: #181a1e;
+      right: 60px;
+      top: 100px;
+      display: flex;
+      flex-direction: column;
+      width: 200px;
+      padding: 10px 0;
+      border-radius: 15px;
+      z-index: 9999;
+
+      a {
+        padding: 8px 15px;
+        text-decoration: none;
+        font-weight: 700;
+        cursor: pointer;
+        color: white;
+
+        &:hover {
+          color: #FF1493;
+          background-color: rgba(217, 213, 213, 0.2);
+        }
+      }
+    }
+  }
+}
