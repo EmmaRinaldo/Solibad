@@ -26,10 +26,11 @@ model User {
 }
 
 model Admin {
-  id       String @id @default(cuid())
-  email    String @unique
+  id       String    @id @default(cuid())
+  email    String    @unique
   password String
 }
+
 
 model Account {
   id                String   @id @default(cuid())
