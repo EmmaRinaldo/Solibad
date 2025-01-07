@@ -39,17 +39,16 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 },
             });
 
-            console.log(existingBid)
             let newBid;
             if (existingBid) {
                 newBid = await prisma.bid.update({
                     where: { id: existingBid.id },
                     data: {
-                        lastBid: bidAmount
+                        lastBid: bidAmount,
+                        bidedAt: new Date(),
                     },
                 });
             } else {
-                console.log(userId, auctionId, bidAmount)
                 newBid = await prisma.bid.create({
                     data: {
                         userId: userId,
@@ -60,7 +59,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 console.log(newBid)
             }
 
-            console.log(newBid)
             const updatedAuction = await prisma.auction.update({
                 where: { id: auctionId },
                 data: { ActualBid: bidAmount },
