@@ -10,7 +10,11 @@ export default function AdminDashboard() {
   }
 
   // if (!session || session.user.role !== "admin") {
-  //   return <p>You are not authorized to view this page.</p>;
+
+  //   // Redirection vers la page de connexion
+  //   setTimeout(() => {
+  //     window.location.href = "/api/auth/signin";
+  //   }, 2000);
   // }
   
    return (
@@ -34,6 +38,14 @@ export default function AdminDashboard() {
           <label htmlFor="minIncr" className="block text-sm font-medium text-gray-700">Minimum Increment:</label>
           <input type="number" id="minIncr" name="minIncr" required className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
         </div>
+        <div className="mb-4">
+          <label htmlFor="startDate" className="block text-sm font-medium text-gray-700">Start Date (keep empty to start auction now):</label>
+          <input type="datetime-local" id="startDate" name="startDate" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        </div>
+        <div className="mb-4">
+          <label htmlFor="endDate" className="block text-sm font-medium text-gray-700">End Date (keep empty to end it 24h from now):</label>
+          <input type="datetime-local" id="endDate" name="endDate" className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm" />
+        </div>
         <button type="submit" className="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">Create Auction</button>
       </form>
     </div>
@@ -48,7 +60,11 @@ export default function AdminDashboard() {
     // conversion des valeurs en nombres décimaux
     body.startPrice = parseFloat(body.startPrice);
     body.minIncr = parseFloat(body.minIncr);
-
+    // les dates de départ et de fin doivent etre des dates ou nulles
+    body.startDate = body.startDate ? new Date(body.startDate) : null;
+    body.endDate = body.endDate ? new Date(body.endDate) : null;
+    
+    
     const response = await fetch("/api/auctions", {
       method: "POST",
       headers: {

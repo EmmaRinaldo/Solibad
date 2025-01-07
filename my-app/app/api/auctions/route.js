@@ -32,19 +32,18 @@ export async function GET(req) {
 
 // Fonction pour gérer les requêtes POST
 export async function POST(req) {
-    // const session = await getSession({ req });
-    // if (!session) {
-    //     return new Response(JSON.stringify({ error: 'Non authentifié' }), { status: 401 });
-    // }
 
     try {
         const body = await req.json();
+        console.log(body)
         const newAuction = await prisma.auction.create({
             data: {
-                title: body.title,
-                description: body.description,
-                startPrice: body.startPrice,
-                minIncr: body.minIncr
+            title: body.title,
+            description: body.description,
+            startPrice: body.startPrice,
+            minIncr: body.minIncr,
+            startDate: new Date(body.startDate),
+            endDate: new Date(body.endDate)
             }
         });
         return new Response(JSON.stringify(newAuction), { status: 201 });
@@ -55,10 +54,6 @@ export async function POST(req) {
 
 // Fonction pour gérer les requêtes PUT
 export async function PUT(req) {
-    // const session = await getSession({ req });
-    // if (!session) {
-    //     return new Response(JSON.stringify({ error: 'Non authentifié' }), { status: 401 });
-    // }
 
     try {
         const body = await req.json();

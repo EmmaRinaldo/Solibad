@@ -58,7 +58,7 @@ model Auction {
   description String
   startPrice  Float
   startDate   DateTime  @default(now())
-  endDate     DateTime?
+  endDate     DateTime  @default(dbgenerated("now() + interval '1 day'"))
   minIncr     Float
   ActualBid   Float     @default(0)
   FinishedBid Float?
