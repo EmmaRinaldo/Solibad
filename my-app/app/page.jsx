@@ -16,7 +16,7 @@ const Home = () => {
     <>
       <title>Auction - Solibad</title>
       <meta name="description" content="..." />
-      <meta name="keywords" content="zuction" />
+      <meta name="keywords" content="auction" />
 
       <Navbar />
       <div className="navbar-padding-protection"></div>

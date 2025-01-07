@@ -1,0 +1,10 @@
+{
+    "greeting": "Bonjour",
+    "about": "À propos",
+    "shop": "Boutique",
+    "contact": "Contact",
+    "login": "Se connecter",
+    "register": "S'inscrire",
+    "dashboard": "Tableau de bord",
+    "cart": "Panier"
+}

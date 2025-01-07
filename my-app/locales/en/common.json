@@ -1,0 +1,10 @@
+{
+    "greeting": "Hello",
+    "about": "About",
+    "shop": "Shop",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register",
+    "dashboard": "Dashboard",
+    "cart": "Cart"
+}

@@ -11,36 +11,16 @@ const Footer = () => {
                     <a className="navbar-brand"id="footer-heading" href="/">
                         <img 
                             className="d-xs-block d-sm-block d-md-none d-lg-none" 
-                            src="/assets/logo-brekor-small.svg" 
-                            alt="Petit logo Brekor"
+                            src="/assets/logo-solibad-small.svg" 
+                            alt="Petit logo Solibad"
                         />
                         <img 
                             className="d-none d-xs-none d-sm-none d-md-block d-lg-block" 
-                            src="/assets/logo-brekor.svg" 
-                            alt="Logo Brekor"
+                            src="/assets/logo-solibad.svg" 
+                            alt="Logo Solibad"
                             height={30}
                         />
                     </a>
-                    {/* Form Newsletter */}
-                    <form method="post">
-                        <h5>Recevoir nos nouveautés</h5>
-                        <p>En soumettant votre adresse email, vous acceptez son enregistrement et votre inscription à notre newsletter.</p>
-                        <div className="d-flex flex-column flex-sm-row w-100 gap-2">
-                            <div className="input-group">
-                                <input 
-                                    id="newsletter1" 
-                                    type="email" 
-                                    className="form-control" 
-                                    placeholder="Entrez votre mail" 
-                                    aria-label="Email address"
-                                />
-                                <button className="btn" type="submit">
-                                    <img src="/assets/icon-arrow.svg"  alt="Icon arrow" />
-                                </button>
-                            </div>
-                        </div>
-                    </form>
-                    {/* End Form newsletter */}
                 </div>
                 <div className="col-xs-12 col-sm-12 col-md-3 col-lg-3 offset-lg-1 mb-3">
                     <h5>Accéder</h5>
@@ -66,22 +46,22 @@ const Footer = () => {
                     <h5>Réseaux sociaux</h5>
                     <ul className="nav flex-column">
                         <li className="nav-item mb-2">
-                            <a href="https://www.facebook.com/people/Brekor/61560302835954/" className="nav-link p-0" target="_blank" aria-label="Lien vers Facebook">
+                            <a href="https://www.facebook.com/solibad.fr" className="nav-link p-0" target="_blank" aria-label="Lien vers Facebook">
                                 Facebook
                             </a>
                         </li>
                         <li className="nav-item mb-2">
-                            <a href="https://www.instagram.com/brekoroff/" className="nav-link p-0" target="_blank" aria-label="Lien vers Instagram">
+                            <a href="https://www.instagram.com/Solibad_Charity/" className="nav-link p-0" target="_blank" aria-label="Lien vers Instagram">
                                 Instagram
                             </a>
                         </li>
                         <li className="nav-item mb-2">
-                            <a href="https://www.linkedin.com/company/brekoroff/" className="nav-link p-0" target="_blank" aria-label="Lien vers Twitter">
+                            <a href="https://x.com/i/flow/login?redirect_after_login=%2FSolibadFr" className="nav-link p-0" target="_blank" aria-label="Lien vers Twitter">
                                 Twitter
                             </a>
                         </li>
                         <li className="nav-item mb-2">
-                            <a href="https://www.tiktok.com/@brekoroff" className="nav-link p-0" target="_blank" aria-label="Lien vers YouTube">
+                            <a href="https://www.youtube.com/user/solibadnet" className="nav-link p-0" target="_blank" aria-label="Lien vers YouTube">
                                 YouTube
                             </a>
                         </li>
@@ -89,7 +69,7 @@ const Footer = () => {
                 </div>
             </div>
             <div className="d-flex flex-column flex-sm-row justify-content-center text-center py-4 border-top">
-                <p>&copy; 2024 Brekor All rights reserved.</p>
+                <p>&copy; 2024 Solibad Tout droits réservés.</p>
             </div>
         </footer>
     );

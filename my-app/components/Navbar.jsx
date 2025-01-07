@@ -1,46 +1,35 @@
 // components/Navbar.jsx
 "use client";
-import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+
+import { useSession } from "next-auth/react";
+import { useRouter, usePathname } from "next/navigation";
+import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next"; // Import du hook useTranslation
 
 const Navbar = () => {
-    // Get session and user from useSession hook
-    const { data: session, status } = useSession(); 
+    const { data: session } = useSession();
     const user = session?.user;
-
-    // State to manage dropdown menu
-    const [dropdownMenu, setDropdownMenu] = useState(false);
-    const [userId, setUserId] = useState(null);
-    const [isScrolled, setIsScrolled] = useState(false);
-
-    // Get the router object
     const router = useRouter();
+    const pathname = usePathname();  // Pour garder la langue dans l'URL
 
-    // Effect to set userId from session when session updates
-    useEffect(() => {
-        if (session?.user?.id) {
-            setUserId(session.user.id);
-        }
-    }, [session]);
+    const [isScrolled, setIsScrolled] = useState(false);
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false);
 
-    // Function to handle logout
-    const handleLogout = async () => {
-        signOut({ callbackUrl: '/login' });
+    const { t } = useTranslation(); // Utilisation du hook useTranslation
+
+    const getGreeting = () => {
+        const currentHour = new Date().getHours();
+        return currentHour < 12 ? t('greeting') : t('greeting');
     };
 
-    // Get cart from user
-    const cart = user?.cart;
+    const handleLanguageChange = (lang) => {
+        router.push(`/${lang}${pathname}`);
+    };
 
-    // Effect to handle scroll event
     useEffect(() => {
         const handleScroll = () => {
-            if (window.scrollY > 50) {
-                setIsScrolled(true);
-            } else {
-                setIsScrolled(false);
-            }
+            setIsScrolled(window.scrollY > 50);
         };
 
         window.addEventListener("scroll", handleScroll);
@@ -51,58 +40,164 @@ const Navbar = () => {
     }, []);
 
     return (
-        <nav 
-            className={`navbar fixed-top ${isScrolled ? "scrolled" : ""}`} 
-            aria-label="Menu de navigation"
+        <nav
+            className={`fixed top-0 left-0 w-full z-50 bg-white shadow ${isScrolled ? "shadow-md" : ""
+                } transition-shadow duration-300`}
         >
-            <a href="/">
-                <img 
-                    className="d-xs-block d-sm-block d-md-none d-lg-none" 
-                    src="/assets/logo-brekor-small.svg" 
-                    alt="Petit logo Brekor"
-                />
-                <img 
-                    className="d-none d-xs-none d-sm-none d-md-block d-lg-block" 
-                    src="/assets/logo-brekor.svg" 
-                    alt="Logo Brekor"
-                    height={30}
-                />
-            </a>
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+                {/* Logo */}
+                <a href="/" className="flex-shrink-0">
+                    <img
+                        src="/assets/logo-solibad.svg"
+                        alt="Logo Solibad"
+                        className="h-8 md:h-10"
+                    />
+                </a>
 
-            <div className="navbar_right">
-                {user && (
+                {/* Grand écran : Liens au centre et à droite */}
+                <div className="hidden md:flex flex-grow justify-center items-center space-x-6">
+                    <a href="/about" className="text-gray-700 hover:text-gray-900">{t('about')}</a>
+                    <a href="/shop" className="text-gray-700 hover:text-gray-900">{t('shop')}</a>
+                    <a href="/contact" className="text-gray-700 hover:text-gray-900">{t('contact')}</a>
+                </div>
+
+                <div className="hidden md:flex items-center space-x-4">
+                    {/* Panier toujours visible */}
                     <a href="/cart">
-                        <img src="/assets/icon-cart.svg" alt="Icon cart" />
+                        <img
+                            src="/assets/icon-cart.svg"
+                            alt="Panier"
+                            className="h-6 w-6"
+                        />
                     </a>
-                )}
-                <button className="navbar_right_account" onClick={() => setDropdownMenu(!dropdownMenu)}>
-                    {!user ? (
-                        <img src="/assets/icon-cart.svg" alt="Icon cart" />
-                    ) : (
-                        <img src={user.profileImagePath} alt="profile" style={{ objectFit: "cover", borderRadius: "50%" }} />
-                    )}
-                </button>
-                
-                {dropdownMenu && !user && (
-                    <div className="gradient-border-all-rounder navbar_right_accountmenu">
-                        <Link href="/login">Se connecter</Link>
-                        <Link href="/register">S'inscrire</Link>
-                    </div>
-                )}
 
-                {dropdownMenu && user && (
-                    <div className="gradient-border-all-rounder navbar_right_accountmenu">
-                        <Link href={userId ? `/wishlist?id=${userId}` : "/wishlist"}>Liste de souhait</Link>
-                        <Link href="/cart">Panier</Link>
-                        <Link href="/order">Commandes</Link>
-                        {userId && <Link href={`/shop?id=${userId}`}>Shop</Link>}
-                        <Link href="/create-work">Poster</Link>
-                        <a onClick={handleLogout}>Déconnexion</a>
+                    {/* Menu déroulant des langues */}
+                    <div className="relative">
+                        <button
+                            onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
+                            className="text-gray-700 hover:text-gray-900 focus:outline-none"
+                        >
+                            {t('language')} {/* Traduction pour "Langues" */}
+                        </button>
+                        {isLanguageMenuOpen && (
+                            <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg rounded-lg">
+                                <ul className="space-y-2 p-2">
+                                    {['fr', 'en', 'zh', 'id', 'ja', 'ko'].map((lang) => (
+                                        <li key={lang}>
+                                            <button
+                                                onClick={() => handleLanguageChange(lang)}
+                                                className="block w-full text-left text-gray-700 hover:text-gray-900 p-2"
+                                            >
+                                                {lang === 'fr' ? 'Français' : lang === 'en' ? 'English' : lang === 'zh' ? '中文' : lang === 'id' ? 'Bahasa' : lang === 'ja' ? '日本語' : '한국어'}
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        )}
                     </div>
-                )}
+
+                    {/* Bouton utilisateur */}
+                    <a href={user ? "/dashboard" : "/login"}>
+                        <img
+                            src={user?.profileImagePath || "/assets/default-profile.png"}
+                            alt="Profil utilisateur"
+                            className="h-8 w-8 rounded-full object-cover border border-gray-300"
+                        />
+                    </a>
+                </div>
+
+                {/* Petit écran : Menu burger */}
+                <div className="md:hidden flex items-center">
+                    <button
+                        onClick={() => setIsMenuOpen(!isMenuOpen)}
+                        className="text-gray-700 hover:text-gray-900 focus:outline-none"
+                    >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                        >
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M4 6h16M4 12h16m-7 6h7"
+                            />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            {/* Petit écran : Menu responsive */}
+            <div
+                className={`fixed top-0 right-0 h-full w-full bg-white transform transition-transform duration-300 ${
+                    isMenuOpen ? "translate-x-0" : "translate-x-full"
+                } z-40`}
+            >
+                <div className="flex flex-col h-full p-6">
+                    {/* Section utilisateur */}
+                    <div className="flex items-center justify-between space-x-4">
+                        <div className="flex items-center space-x-2">
+                            <img
+                                src={user?.profileImagePath || "/assets/default-profile.png"}
+                                alt="Profil utilisateur"
+                                className="h-10 w-10 rounded-full object-cover"
+                            />
+                            {user ? (
+                                <span className="text-xl font-semibold">
+                                    {getGreeting()}, {user?.name || "Utilisateur"} !
+                                </span>
+                            ) : (
+                                <span className="text-xl font-semibold">
+                                    <a href="/login" className="text-blue-600 hover:underline">
+                                        Connectez-vous
+                                    </a>
+                                    {" "} pour accéder à votre compte.
+                                </span>
+                            )}
+                        </div>
+                        <button
+                            onClick={() => setIsMenuOpen(false)}
+                            className="text-gray-700 ml-auto"
+                        >
+                            <svg
+                                xmlns="http://www.w3.org/2000/svg"
+                                className="h-6 w-6"
+                                fill="none"
+                                viewBox="0 0 24 24"
+                                stroke="currentColor"
+                            >
+                                <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    strokeWidth={2}
+                                    d="M6 18L18 6M6 6l12 12"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+
+                    <nav className="flex flex-col mt-8 space-y-4">
+                        <a href="/about" className="text-lg text-gray-700 hover:text-gray-900">{t('about')}</a>
+                        <a href="/shop" className="text-lg text-gray-700 hover:text-gray-900">{t('shop')}</a>
+                        <a href="/contact" className="text-lg text-gray-700 hover:text-gray-900">{t('contact')}</a>
+                        <a href="/cart" className="text-lg text-gray-700 hover:text-gray-900">{t('cart')}</a>
+                        {user ? (
+                            <button
+                                onClick={() => alert("Déconnexion")}
+                                className="text-lg text-gray-700 hover:text-gray-900"
+                            >
+                                Déconnexion
+                            </button>
+                        ) : null}
+                    </nav>
+                </div>
             </div>
         </nav>
     );
-}
+};
 
 export default Navbar;

@@ -1,5 +1,9 @@
-/* GENERAL */
+/* styles/globas.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
+/* GENERAL */
 
 *, *::after,*::before{
   padding: 0;
@@ -24,13 +28,6 @@ ul {
   list-style: none;
 }
 
-/* BACKGROUND */
-.bg-darker {
-  background-image: url('/assets/background.svg');
-  background-size: cover;
-  background-position: center;
-  background-repeat: no-repeat;
-}
 
 /* PADDING + MARGIN */
 footer {
@@ -68,80 +65,6 @@ footer h5 {
     padding: 69px 0 0 !important;
   } 
 }
-
-
-/* BTN */
-.btn-pink {
-  background-color: #FF1493 !important;
-}
-
-/* GRADIENT EFFECT */
-/* BUTTONS GRADIENT*/
-.div-btn-gradient {
-  padding: 16px 0 !important;
-  color: white !important;
-}
-.btn-gradient, .input-group .btn {
-  padding: 13px 16px !important;
-  border-radius: 18px;
-  border: 0;
-  background: linear-gradient(to right, #FF1493, #224BF4) !important;
-}
-
-/* COLOR GRADIENT */
-.gradient-color {
-  background: linear-gradient(to right, #FF1493, #224BF4);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  color: transparent;
-}
-
-/* BORDER GRADIENT */
-.gradient-border, 
-.gradient-border-all,
-.gradient-border-all-rounder,
-.gradient-border-home, 
-.gradient-border-footer {
-  position: relative;
-  border-radius: 15px;
-  overflow: hidden;
-  z-index: 1;
-}
-.gradient-border::before, 
-.gradient-border-all::before,
-.gradient-border-all-rounder::before,
-.gradient-border-home::before, 
-.gradient-border-footer::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 15px;
-  padding: 2px;
-  background: linear-gradient(to right, #FF1493, #224BF4);
-  -webkit-mask: 
-    linear-gradient(#fff 0%, #fff 100%) content-box, 
-    linear-gradient(#fff 0%, #fff 100%);
-  -webkit-mask-composite: xor; 
-  mask-composite: exclude; 
-  z-index: -1;
-}
-.gradient-border-footer, 
-.gradient-border-footer::before {
-  border-radius: 15px 15px 0 0;
-}
-.gradient-border-all-rounder, 
-.gradient-border-all-rounder::before {
-  border-radius: 15px;
-}
-.gradient-border-all, 
-.gradient-border-all::before {
-  border-radius: 0 !important;
-}
-
 
 /* RESPONSIVE: LARGE SCREENS */
 @media (min-width: 993px) {
@@ -198,15 +121,5 @@ footer h5 {
     margin-left: auto;
     width: 100%;
     max-width: 100%;
-  }
-
-  /* BORDERS */
-  .gradient-border::before {
-    background: none !important;
-    border: none !important;
-  }
-  .gradient-border-home::before,
-  .gradient-border-home {
-    border-radius: 0 0 15px 15px;
   }
 }

@@ -1,6 +1,5 @@
 // app/api/auth/[...nextauth].js
 import NextAuth from "next-auth";
-import Providers from "next-auth/providers";
 
 export default NextAuth({
   providers: [

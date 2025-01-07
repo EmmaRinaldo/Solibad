@@ -1,5 +1,5 @@
 // app/layout.jsx
-// import "@/styles/globals.css";
+import "@/styles/globals.css";
 import Provider from "@/components/Provider";
 
 const layout = ({ children }) => {
@@ -10,7 +10,7 @@ const layout = ({ children }) => {
       </head>
       <body>
         <Provider>
-          <main className="bg-darker">
+          <main>
             {children}
           </main>
         </Provider>
