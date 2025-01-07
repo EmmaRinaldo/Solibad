@@ -12,3 +12,53 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  name      String
+  lastname  String
+  password  String
+  telephone String
+  country   String
+  city      String
+  language  String?
+  currency  String?
+
+  // Relation with the Bid model
+  bids Bid[]
+}
+
+model Auction {
+  id          String   @id @default(cuid())
+  title       String
+  description String
+  startPrice  Float
+  startDate   DateTime @default(now())
+  endDate     DateTime?
+  minIncr      Float
+  ActualBid   Float    @default(0)
+  FinishedBid Float?
+  winnerId    String?
+
+  // Relation with the Bid model
+  bids Bid[]
+}
+
+model Bid {
+  id        String   @id @default(cuid())
+  user     User     @relation(fields: [userId], references: [id])
+  userId    String
+  auction  Auction  @relation(fields: [auctionId], references: [id])
+  auctionId String
+  lastBid   Float
+  bidLimit  Float
+  autoIncr  Float
+  bidedAt DateTime @default(now())
+}
+
+model Admin {
+  id       String @id @default(cuid())
+  email    String @unique
+  password String
+}
