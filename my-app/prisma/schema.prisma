@@ -52,8 +52,8 @@ model Bid {
   auction  Auction  @relation(fields: [auctionId], references: [id])
   auctionId String
   lastBid   Float
-  bidLimit  Float
-  autoIncr  Float
+  bidLimit  Float?
+  autoIncr  Float?
   bidedAt DateTime @default(now())
 }
 
