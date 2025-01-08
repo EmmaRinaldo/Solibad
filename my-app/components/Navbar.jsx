@@ -3,7 +3,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import logoSolibad from "@/public/assets/logo.png";
+import logoSolibad from "../public/assets/logo.png";
 import { NavigationMenu, NavigationMenuItem, NavigationMenuList, NavigationMenuTrigger } from "./ui/navigation-menu";
 import { LogOut, User } from "lucide-react";
 import { signOut, useSession } from "next-auth/react";
