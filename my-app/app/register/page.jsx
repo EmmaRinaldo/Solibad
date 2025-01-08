@@ -1,3 +1,5 @@
+// app/register/page.jsx
+
 "use client";
 
 import { useState } from "react";
@@ -108,6 +110,7 @@ export default function Register() {
             }
             className="w-full p-2 border border-gray-300 rounded-md"
           />
+          //TODO: Ajouter responsive dropdown pour les pays (https://ui.shadcn.com/docs/components/combobox)
           <input
             type="text"
             placeholder="City"
@@ -117,6 +120,7 @@ export default function Register() {
             }
             className="w-full p-2 border border-gray-300 rounded-md"
           />
+          //TODO: Ajouter responsive dropdown pour les ville (https://ui.shadcn.com/docs/components/combobox). Voir si on peut utiliser la même librairie que pour les pays pour que ça mette seulement les villes du pays sélectionné
           <button
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white rounded-md"

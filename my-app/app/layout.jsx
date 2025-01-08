@@ -1,32 +1,23 @@
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import SessionProviderWrapper from "./components/SessionProviderWrapper";
+// app/layout.jsx
+import "@/styles/global.css";
+import SessionProviderWrapper from "@/components/SessionProviderWrapper";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
-
-export const metadata = {
-  title: "Solibad Auction",
-  description: "Venez participer à la vente aux enchères de Solibad",
-};
-
-export default function RootLayout({ children }) {
+const layout = ({ children }) => {
   return (
     <html lang="fr">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <head>
+        <script src="//cdn.conveythis.com/javascript/conveythis.js?api_key=pub_adeb41473f77976bf6b414cfaddcec95"></script>
+      </head>
+      <body>
         <SessionProviderWrapper>
-          {children}
+          <main>
+            {children}
+          </main>
         </SessionProviderWrapper>
       </body>
     </html>
   );
-}
+};
+
+export default layout;
