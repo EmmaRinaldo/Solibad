@@ -1,3 +1,4 @@
+// app/layout.jsx
 "use client";
 
 import "@/styles/globals.css";
