@@ -23,7 +23,7 @@ export async function GET(req) {
             return new Response(JSON.stringify(auctions), { status: 200 });
         }
     } catch (error) {
-        console.error('Erreur lors de la récupération de l\'enchère:', error);
+        // console.error('Erreur lors de la récupération de l\'enchère:', error);
         return new Response(JSON.stringify({ error: 'Erreur lors de la récupération de l\'enchère' }), { status: 500 });
     }
 }
@@ -33,7 +33,6 @@ export async function POST(req) {
 
     try {
         const body = await req.json();
-        console.log(body)
         const newAuction = await prisma.auction.create({
             data: {
             title: body.title,
