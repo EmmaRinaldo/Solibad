@@ -1,6 +1,6 @@
 // app/layout.jsx
-import "@/styles/global.css";
-import SessionProviderWrapper from "@/components/SessionProviderWrapper";
+import "../styles/global.css";
+import SessionProviderWrapper from "../components/SessionProviderWrapper";
 
 
 const layout = ({ children }) => {

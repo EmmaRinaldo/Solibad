@@ -1,7 +1,8 @@
 // app/page.jsx
 "use client";
-import Footer from "@/components/Footer";
-import Navbar from "@/components/Navbar";
+
+import Footer from "../components/Footer";
+import Navbar from "../components/Navbar";
 import { useSession } from "next-auth/react";
 
 export default function Home() {
