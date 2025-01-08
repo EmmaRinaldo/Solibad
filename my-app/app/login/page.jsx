@@ -1,3 +1,5 @@
+// app/login/page.jsx
+
 "use client";
 
 import { signIn } from "next-auth/react";
@@ -13,17 +15,18 @@ export default function Login() {
     setError("");
 
     try {
-      const result = await signIn("credentials", {
+      const result = await signIn("user-credentials", {
         email,
         password,
         redirect: true,
-        callbackUrl: "/home-protect", // Redirige après connexion (modifie si nécessaire)
+        callbackUrl: "/", // Redirige après connexion (modifie si nécessaire)
       });
 
       if (!result.ok) {
         setError("Invalid email or password");
       }
     } catch (err) {
+      console.log(err)
       setError("An error occurred during login");
     }
   };
@@ -31,7 +34,7 @@ export default function Login() {
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
       <div className="w-full max-w-md p-6 bg-white shadow-md rounded-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">Login</h1>
+        <h1 className="text-2xl font-bold mb-4 text-center">Connectez vous</h1>
         {error && <p className="text-red-500 text-center">{error}</p>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
@@ -49,7 +52,7 @@ export default function Login() {
           </div>
           <div>
             <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-              Password
+              Mot de Passe
             </label>
             <input
               id="password"
@@ -64,7 +67,7 @@ export default function Login() {
             type="submit"
             className="w-full py-2 px-4 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus:outline-none"
           >
-            Login
+            Se Connecter
           </button>
         </form>
       </div>

@@ -1,3 +1,5 @@
+// api/auth/[...nextauth]/route.js
+
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -16,6 +18,7 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // Recherche l'utilisateur dans la table User
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -24,6 +27,7 @@ const authOptions = {
           throw new Error("No user found with this email");
         }
 
+        // Vérifie le mot de passe
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
@@ -33,7 +37,7 @@ const authOptions = {
           throw new Error("Invalid password");
         }
 
-        return user;
+        return user; // Retourne l'utilisateur si tout est valide
       },
     }),
 
@@ -46,6 +50,7 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
+        // Recherche l'admin dans la table Admin
         const admin = await prisma.admin.findUnique({
           where: { email: credentials.email },
         });
@@ -54,6 +59,7 @@ const authOptions = {
           throw new Error("No admin found with this email");
         }
 
+        // Vérifie le mot de passe
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           admin.password
@@ -63,7 +69,7 @@ const authOptions = {
           throw new Error("Invalid password");
         }
 
-        return admin;
+        return admin; // Retourne l'admin si tout est valide
       },
     }),
   ],
@@ -75,7 +81,7 @@ const authOptions = {
       if (user) {
         token.id = user.id;
 
-        // Définir le rôle en fonction du provider utilisé
+        // Définit le rôle en fonction du provider utilisé
         if (account?.provider === "admin-credentials") {
           token.role = "admin";
         } else {
@@ -88,13 +94,13 @@ const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.role = token.role; // Inclut le rôle dans la session
+        session.user.role = token.role; // Ajoute le rôle à la session
       }
 
       return session;
     },
   },
-  secret: process.env.NEXTAUTH_SECRET, // Assurez-vous que cette variable est bien définie dans votre fichier .env
+  secret: process.env.NEXTAUTH_SECRET,
 };
 
 export { authOptions };
