@@ -4,29 +4,27 @@ const prisma = new PrismaClient();
 
 // Fonction pour gérer les requêtes GET
 export async function GET(req) {
-    const { searchParams } = new URL(req.url);
-    const id = searchParams.get('id');
+    try {
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
 
-    if (id) {
-        try {
+        if (id) {
             const auction = await prisma.auction.findUnique({
-                where: { id: String(id) }
+                where: { id: String(id) },
+                include: { bids: true }
             });
             if (auction) {
-                return new Response(JSON.stringify(auction), { status: 200 });
+                return new Response(JSON.stringify({auction, bids: auction.bids}), { status: 200 });
             } else {
                 return new Response(JSON.stringify({ error: 'Enchère non trouvée' }), { status: 404 });
             }
-        } catch (error) {
-            return new Response(JSON.stringify({ error: 'Erreur lors de la récupération de l\'enchère' }), { status: 500 });
-        }
-    } else {
-        try {
+        } else {
             const auctions = await prisma.auction.findMany();
             return new Response(JSON.stringify(auctions), { status: 200 });
-        } catch (error) {
-            return new Response(JSON.stringify({ error: 'Erreur lors de la récupération des enchères' }), { status: 500 });
         }
+    } catch (error) {
+        console.error('Erreur lors de la récupération de l\'enchère:', error);
+        return new Response(JSON.stringify({ error: 'Erreur lors de la récupération de l\'enchère' }), { status: 500 });
     }
 }
 
@@ -43,7 +41,8 @@ export async function POST(req) {
             startPrice: body.startPrice,
             minIncr: body.minIncr,
             startDate: new Date(body.startDate),
-            endDate: new Date(body.endDate)
+            endDate: new Date(body.endDate),
+            ActualBid: body.startPrice,
             }
         });
         return new Response(JSON.stringify(newAuction), { status: 201 });

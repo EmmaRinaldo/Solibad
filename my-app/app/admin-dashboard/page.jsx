@@ -9,13 +9,13 @@ export default function AdminDashboard() {
     return <p>Loading...</p>;
   }
 
-  // if (!session || session.user.role !== "admin") {
+  if (!session || session.user.role !== "admin") {
 
-  //   // Redirection vers la page de connexion
-  //   setTimeout(() => {
-  //     window.location.href = "/api/auth/signin";
-  //   }, 2000);
-  // }
+    // Redirection vers la page de connexion
+    setTimeout(() => {
+      window.location.href = "/api/auth/signin";
+    }, 2000);
+  }
   
    return (
     <div className="p-6 bg-gray-100 min-h-screen">

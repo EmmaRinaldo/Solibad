@@ -13,6 +13,10 @@ export default function CurrentAuctions({ auctions }) {
     </div>
   );
 
+  const handleJoinClick = (id) => {
+    window.location.href = `/auctions/${id}`;
+  };
+
   return (
     <div className="mt-4">
       {auctions.map(auction => (
@@ -22,6 +26,13 @@ export default function CurrentAuctions({ auctions }) {
           <p className="text-gray-900 font-bold">Prix actuel: {auction.currentPrice}</p>
           <p className="text-gray-700">Début: {formatDate(auction.startDate)}</p>
           {auction.endDate && <p className="text-gray-700">Fin prévue: {formatDate(auction.endDate)}</p>}
+
+          <button
+            className="bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+            onClick={() => handleJoinClick(auction.id)}
+          >
+            Rejoindre
+          </button>
         </div>
       ))}
     </div>
