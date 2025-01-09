@@ -1,4 +1,4 @@
-// app/auction/page.jsx
+// app/auctions/page.jsx
 
 export default function Auction() {
     return (

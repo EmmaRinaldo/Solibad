@@ -1,82 +1,111 @@
-import { PrismaClient } from '@prisma/client';
+//app/api/auctions/route.js
+
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
-// Fonction pour gérer les requêtes GET
+// GET toutes les enchères
 export async function GET(req) {
-    try {
-        const { searchParams } = new URL(req.url);
-        const id = searchParams.get('id');
+  try {
+    const { searchParams } = new URL(req.url);
+    const type = searchParams.get("type");
+    const id = searchParams.get("id");
 
-        if (id) {
-            const auction = await prisma.auction.findUnique({
-                where: { id: String(id) },
-                include: { bids: true }
-            });
-            if (auction) {
-                return new Response(JSON.stringify({auction, bids: auction.bids}), { status: 200 });
-            } else {
-                return new Response(JSON.stringify({ error: 'Enchère non trouvée' }), { status: 404 });
-            }
-        } else {
-            const auctions = await prisma.auction.findMany();
-            return new Response(JSON.stringify(auctions), { status: 200 });
-        }
-    } catch (error) {
-        console.error('Erreur lors de la récupération de l\'enchère:', error);
-        return new Response(JSON.stringify({ error: 'Erreur lors de la récupération de l\'enchère' }), { status: 500 });
+    if (id) {
+      // Récupérer une enchère spécifique par son ID
+      const auction = await prisma.auction.findUnique({
+        where: { id },
+      });
+
+      if (!auction) {
+        return new Response(
+          JSON.stringify({ error: "Enchère non trouvée" }),
+          { status: 404 }
+        );
+      }
+
+      return new Response(JSON.stringify(auction), { status: 200 });
     }
+
+    if (type === "active") {
+      // Récupérer uniquement les enchères actives
+      const now = new Date();
+      const activeAuctions = await prisma.auction.findMany({
+        where: {
+          startDate: { lte: now },
+          endDate: { gte: now },
+        },
+        orderBy: { startDate: "asc" },
+      });
+      return new Response(JSON.stringify(activeAuctions), { status: 200 });
+    }
+
+    // Récupérer toutes les enchères
+    const auctions = await prisma.auction.findMany({
+      orderBy: { startDate: "asc" },
+    });
+    return new Response(JSON.stringify(auctions), { status: 200 });
+  } catch (error) {
+    return new Response(
+      JSON.stringify({ error: "Erreur lors de la récupération des enchères" }),
+      { status: 500 }
+    );
+  }
 }
 
 // Fonction pour gérer les requêtes POST
 export async function POST(req) {
-
-    try {
-        const body = await req.json();
-        console.log(body)
-        const newAuction = await prisma.auction.create({
-            data: {
-            title: body.title,
-            description: body.description,
-            startPrice: body.startPrice,
-            minIncr: body.minIncr,
-            startDate: new Date(body.startDate),
-            endDate: new Date(body.endDate),
-            ActualBid: body.startPrice,
-            }
-        });
-        return new Response(JSON.stringify(newAuction), { status: 201 });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: 'Erreur lors de la création de l\'enchère' }), { status: 500 });
-    }
+    
+  try {
+      const body = await req.json();
+      const newAuction = await prisma.auction.create({
+          data: {
+          title: body.title,
+          description: body.description,
+          startPrice: body.startPrice,
+          minIncr: body.minIncr,
+          startDate: new Date(body.startDate),
+          endDate: new Date(body.endDate),
+          ActualBid: body.startPrice,
+          images: body.images,
+          }
+      });
+      return new Response(JSON.stringify(newAuction), { status: 201 });
+  } catch (error) {
+      return new Response(JSON.stringify({ error: 'Erreur lors de la création de l\'enchère' }), { status: 500 });
+  }
 }
 
-// Fonction pour gérer les requêtes PUT
 export async function PUT(req) {
+  try {
+      const body = await req.json();
+      const auction = await prisma.auction.findUnique({
+          where: { id: body.auctionId }
+      });
+      if (!auction) {
+          return new Response(JSON.stringify({ error: 'Enchère non trouvée' }), { status: 404 });
+      }
 
-    try {
-        const body = await req.json();
-        const { auctionId, newBid } = body;
+      const bid = await prisma.bid.findFirst({
+          where: {
+              auctionId: body.auctionId, lastBid: auction.ActualBid
+          }
+      });
 
-        const auction = await prisma.auction.findUnique({
-            where: { id: auctionId },
-        });
+      const winner = await prisma.user.findUnique({
+          where: { id: bid.userId }
+      });
 
-        if (!auction) {
-            return new Response(JSON.stringify({ error: 'Enchère non trouvée' }), { status: 404 });
-        }
+      await prisma.auction.update({
+          where: { id: body.auctionId },
+          data: {
+              winnerId: winner.id,
+              FinishedBid: auction.ActualBid
+          }
+      });
 
-        if (newBid <= auction.ActualBid) {
-            return new Response(JSON.stringify({ error: 'La nouvelle enchère doit être supérieure à l\'enchère actuelle' }), { status: 400 });
-        }
-
-        const updatedAuction = await prisma.auction.update({
-            where: { id: auctionId },
-            data: { ActualBid: newBid },
-        });
-
-        return new Response(JSON.stringify(updatedAuction), { status: 200 });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: 'Erreur lors de la mise à jour de l\'enchère' }), { status: 500 });
-    }
+      return new Response(JSON.stringify({ winner }), { status: 200 });
+  } catch (error) {
+      return new Response(JSON.stringify({ error: 'Erreur lors de la détermination du gagnant de l\'enchère' }), { status: 500 });
+  }
 }

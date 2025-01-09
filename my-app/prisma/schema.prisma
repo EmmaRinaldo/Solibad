@@ -64,6 +64,7 @@ model Auction {
   FinishedBid Float?
   winnerId    String?
   bids        Bid[]
+  images      String[]
 }
 
 model Bid {
