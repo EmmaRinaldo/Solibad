@@ -13,7 +13,7 @@ export default function AuctionDetails() {
   const { data: session } = useSession();
 
   const calculateDuration = (startDate, endDate) => {
-    const now = (new Date() - new Date().getTimezoneOffset() * 60000) ;
+    const now = new Date();
     const end = new Date(endDate);
     const days = differenceInCalendarDays(end, now);
     const hours = differenceInHours(end, now) % 24;
@@ -21,6 +21,33 @@ export default function AuctionDetails() {
     const seconds = differenceInSeconds(end, now) % 60;
     return `${days}j ${hours}h ${minutes}m ${seconds}s`;
   };
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (auction) {
+        setAuction({ ...auction });
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [auction]);
+
+  useEffect(() => {
+    if (!auction) return;
+
+    const interval = setInterval(() => {
+      const now = new Date();
+      const endDate = new Date(auction.endDate);
+      const secondsSinceEnd = differenceInSeconds(now, endDate);
+
+      if (secondsSinceEnd === 300) {
+        handleAuctionWinner();
+        clearInterval(interval);
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [auction]);
 
   async function fetchAuctionDetails() {
     try {
@@ -82,8 +109,26 @@ export default function AuctionDetails() {
     }
   }
 
+  async function handleAuctionWinner() {
+    try {
+      const response = await fetch(`/api/auctions`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ auctionId: id })
+      });
+
+      if (response.ok) {
+        fetchAuctionDetails();
+      }
+    } catch {
+      console.error('Erreur lors de la détermination du gagnant de l\'enchère', error);
+    }
+  }
+
   if (!auction) return <p>Chargement...</p>;
-  
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-4">{auction.title}</h1>
@@ -92,12 +137,14 @@ export default function AuctionDetails() {
       <p className="text-red-700">Il reste: {calculateDuration(auction.startDate, auction.endDate)}</p>
       <h2 className="text-xl font-semibold mt-4">Surenchères</h2>
       <ul className="space-y-4">
-        {bids.map(bid => (
-          <li key={bid.id} className="border p-4 rounded shadow">
-            <p className="text-gray-700">Montant: {bid.lastBid}</p>
-            <p className="text-gray-700">Utilisateur: {users[bid.userId]?.name} {users[bid.userId]?.lastname}</p>
-          </li>
-        ))}
+        {bids
+          .sort((a, b) => b.lastBid - a.lastBid)
+          .map(bid => (
+            <li key={bid.id} className="border p-4 rounded shadow">
+              <p className="text-gray-700">Montant: {bid.lastBid}</p>
+              <p className="text-gray-700">Utilisateur: {users[bid.userId]?.name} {users[bid.userId]?.lastname}</p>
+            </li>
+          ))}
       </ul>
       <form onSubmit={handleBidSubmit} className="mt-4" method='POST'>
         <input
@@ -107,8 +154,17 @@ export default function AuctionDetails() {
           defaultValue={auction.ActualBid + auction.minIncr}
           required
         />
-        <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded">Surenchérir</button>
+        <button
+        type="submit"
+        disabled={differenceInSeconds(new Date(), new Date(auction.endDate)) > 300}
+        className="px-4 py-2 bg-blue-500 text-white rounded">Surenchérir</button>
       </form>
+      <button 
+        onClick={handleAuctionWinner} 
+        className="px-4 py-2 bg-green-500 text-white rounded mt-4"
+      >
+        Déterminer le gagnant
+      </button>
     </div>
   );
 }

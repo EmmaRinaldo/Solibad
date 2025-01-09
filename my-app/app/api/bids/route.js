@@ -1,4 +1,5 @@
 import { PrismaClient } from '@prisma/client';
+import { differenceInSeconds } from 'date-fns';
 
 const prisma = new PrismaClient();
 
@@ -47,46 +48,47 @@ export async function POST(req) {
         }
 
         if (differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) < 0) {
-        const existingBid = await prisma.bid.findFirst({
-            where: {
-                userId: userId,
-                auctionId: auctionId
-            },
-          });
-        
-        let newBid;
-        if (existingBid) {
-          newBid = await prisma.bid.update({
-              where: { id: existingBid.id },
-              data: {
-                lastBid: bidAmount,
-                bidedAt: new Date(),
-              },
-          });
-      } else {
-          newBid = await prisma.bid.create({
-              data: {
+          const existingBid = await prisma.bid.findFirst({
+              where: {
                   userId: userId,
-                  auctionId: auctionId,
-                  lastBid: bidAmount,
-                  bidedAt: new Date()
+                  auctionId: auctionId
               },
+            });
+          
+          let newBid;
+          if (existingBid) {
+            newBid = await prisma.bid.update({
+                where: { id: existingBid.id },
+                data: {
+                  lastBid: bidAmount,
+                  bidedAt: new Date(),
+                },
+            });
+        } else {
+            newBid = await prisma.bid.create({
+                data: {
+                    userId: userId,
+                    auctionId: auctionId,
+                    lastBid: bidAmount,
+                    bidedAt: new Date()
+                },
+            });
+        }
+
+          const updatedAuction = await prisma.auction.update({
+              where: { id: auctionId },
+              data: { ActualBid: bidAmount },
           });
-      }
 
-        const updatedAuction = await prisma.auction.update({
-            where: { id: auctionId },
-            data: { ActualBid: bidAmount },
-        });
-
-        return new Response(JSON.stringify({ newBid, updatedAuction }), { status: 201 });
+          return new Response(JSON.stringify({ newBid, updatedAuction }), { status: 201 });
         }
 
         if (0 < differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) <= 300) {
           const existingBid = await prisma.bid.findFirst({
             where: {
                 userId: userId,
-                auctionId: auctionId
+                auctionId: auctionId,
+                lastBid: auction.bidAmount
             },
           });
         
@@ -117,8 +119,8 @@ export async function POST(req) {
         return new Response(JSON.stringify({ newBid, updatedAuction }), { status: 201 });
         }
 
-        if (differenceInSeconds((new Date() - new Date().getTimezoneOffset() * 60000), auction.endDate) > 300) {
-          return new Response(JSON.stringify({ error: `temps dépassé` }), { status: 400 });
+        if (differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) > 300) {
+          return new Response(JSON.stringify({ error: `l'enchère est finie` }), { status: 400 });
         }
 
     } catch (error) {
