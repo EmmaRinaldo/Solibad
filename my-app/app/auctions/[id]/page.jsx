@@ -16,7 +16,7 @@ export default function AuctionDetails() {
     const now = (new Date() - new Date().getTimezoneOffset() * 60000) ;
     const end = new Date(endDate);
     const days = differenceInCalendarDays(end, now);
-    const hours = differenceInHours(end, now);
+    const hours = differenceInHours(end, now) % 24;
     const minutes = differenceInMinutes(end, now) % 60;
     const seconds = differenceInSeconds(end, now) % 60;
     return `${days}j ${hours}h ${minutes}m ${seconds}s`;
@@ -60,17 +60,15 @@ export default function AuctionDetails() {
   }, []);
 
   async function handleBidSubmit(event) {
-    event.preventDefault();
-    const body = Object.fromEntries(new FormData(event.target).entries());
+    event.preventDefault();;
     
     try {
-      const userId = session.user.id;
       const response = await fetch(`/api/bids`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ bidAmount: parseFloat(bidAmount), userId: userId, auctionId: id })
+        body: JSON.stringify({ bidAmount: parseFloat(bidAmount), userId: session.user.id, auctionId: id })
       });
       if (response.ok) {
         console.log(body)
@@ -85,10 +83,9 @@ export default function AuctionDetails() {
   }
 
   if (!auction) return <p>Chargement...</p>;
-
+  
   return (
     <div className="container mx-auto p-4">
-      <p className="mb-6">You are logged in as {session.user.id}.</p>
       <h1 className="text-2xl font-bold mb-4">{auction.title}</h1>
       <p className="text-gray-700">{auction.description}</p>
       <p className="text-gray-900 font-bold">Prix actuel: {auction.ActualBid}</p>

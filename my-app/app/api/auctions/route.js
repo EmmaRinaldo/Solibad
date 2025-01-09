@@ -42,40 +42,11 @@ export async function POST(req) {
             startDate: new Date(body.startDate),
             endDate: new Date(body.endDate),
             ActualBid: body.startPrice,
+            images: body.images,
             }
         });
         return new Response(JSON.stringify(newAuction), { status: 201 });
     } catch (error) {
         return new Response(JSON.stringify({ error: 'Erreur lors de la création de l\'enchère' }), { status: 500 });
-    }
-}
-
-// Fonction pour gérer les requêtes PUT
-export async function PUT(req) {
-
-    try {
-        const body = await req.json();
-        const { auctionId, newBid } = body;
-
-        const auction = await prisma.auction.findUnique({
-            where: { id: auctionId },
-        });
-
-        if (!auction) {
-            return new Response(JSON.stringify({ error: 'Enchère non trouvée' }), { status: 404 });
-        }
-
-        if (newBid <= auction.ActualBid) {
-            return new Response(JSON.stringify({ error: 'La nouvelle enchère doit être supérieure à l\'enchère actuelle' }), { status: 400 });
-        }
-
-        const updatedAuction = await prisma.auction.update({
-            where: { id: auctionId },
-            data: { ActualBid: newBid },
-        });
-
-        return new Response(JSON.stringify(updatedAuction), { status: 200 });
-    } catch (error) {
-        return new Response(JSON.stringify({ error: 'Erreur lors de la mise à jour de l\'enchère' }), { status: 500 });
     }
 }

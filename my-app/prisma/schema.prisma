@@ -18,11 +18,10 @@ model User {
   city      String
   language  String?
   currency  String?
-  bids      Bid[]
-  // NextAuth fields
   emailVerified DateTime?
-  sessions      Session[]
   accounts      Account[]
+  bids          Bid[]
+  sessions      Session[]
 }
 
 model Admin {
@@ -38,7 +37,7 @@ model Account {
   provider          String
   providerAccountId String
   userId            String?
-  user              User?    @relation(fields: [userId], references: [id])
+  user              User?   @relation(fields: [userId], references: [id])
   access_token      String?
   refresh_token     String?
   expires_at        Int?
@@ -63,6 +62,7 @@ model Auction {
   ActualBid   Float     @default(0)
   FinishedBid Float?
   winnerId    String?
+  images      String[]  @default([])
   bids        Bid[]
 }
 
