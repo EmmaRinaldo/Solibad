@@ -6,8 +6,8 @@ import { useEffect, useState } from "react";
 import { useParams } from "next/navigation"; // Récupère params comme promesse
 import Footer from "../../../components/Footer";
 import Navbar from "../../../components/Navbar";
-import { CircleChevronLeft } from "lucide-react"; 
-import {useRouter} from "next/navigation";
+import { CircleChevronLeft } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export default function AuctionDetail() {
   const { id } = useParams(); // Récupère "id" correctement
@@ -70,9 +70,9 @@ export default function AuctionDetail() {
         <div className="container mx-auto px-4">
           <div className="mb-5">
             <button onClick={() => router.back()} className="flex items-center hover:underline">
-              <CircleChevronLeft className=""/>
+              <CircleChevronLeft className="" />
             </button>
-            
+
           </div>
           <div className="flex flex-col lg:flex-row gap-8">
             {/* Colonne gauche (Images du produit) */}
@@ -142,6 +142,19 @@ export default function AuctionDetail() {
                 </div>
               </div>
             </div>
+          </div>
+          <div className="flex flex-col lg:flex-row gap-8">
+            <h2 className="text-xl font-semibold mt-4">Surenchères</h2>
+            <ul className="space-y-4">
+              {bids
+                .sort((a, b) => b.lastBid - a.lastBid)
+                .map(bid => (
+                  <li key={bid.id} className="border p-4 rounded shadow">
+                    <p className="text-gray-700">Montant: {bid.lastBid}</p>
+                    <p className="text-gray-700">Utilisateur: {users[bid.userId]?.name} {users[bid.userId]?.lastname}</p>
+                  </li>
+                ))}
+            </ul>
           </div>
         </div>
       </section>

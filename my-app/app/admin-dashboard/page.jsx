@@ -1,24 +1,10 @@
-//app/admin-dashboard/page.jsx
-
 "use client";
 
 import { useState, useEffect } from "react";
-import Navbar from "../../components/Navbar";
-import Footer from "../../components/Footer";
 
 export default function AdminDashboard() {
   const [auctions, setAuctions] = useState([]);
   const [showPopup, setShowPopup] = useState(false);
-  const [newAuction, setNewAuction] = useState({
-    title: "",
-    description: "",
-    startPrice: "",
-    minIncr: "",
-    startDate: "",
-    endDate: "",
-    image: null, // Image à uploader
-  });
-  const [error, setError] = useState("");
 
   // Charger les enchères existantes
   useEffect(() => {
@@ -35,74 +21,43 @@ export default function AdminDashboard() {
     fetchAuctions();
   }, []);
 
-  // Gestion de la création d'une enchère
-  const handleCreateAuction = async (e) => {
-    e.preventDefault();
-    setError("");
+  // Soumission du formulaire
+  async function handleSubmit(event) {
+    event.preventDefault();
+    const form = event.target;
+    const formData = new FormData(form);
+    const body = Object.fromEntries(formData.entries());
+
+    // Conversion des champs nécessaires
+    body.startPrice = parseFloat(body.startPrice);
+    body.minIncr = parseFloat(body.minIncr);
+    body.startDate = body.startDate ? new Date(body.startDate) : null;
+    body.endDate = body.endDate ? new Date(body.endDate) : null;
 
     try {
-      // Créer l'enchère sans image
-      const auctionResponse = await fetch("/api/auctions", {
+      const response = await fetch("/api/auctions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          title: newAuction.title,
-          description: newAuction.description,
-          startPrice: newAuction.startPrice,
-          minIncr: newAuction.minIncr,
-          startDate: newAuction.startDate,
-          endDate: newAuction.endDate,
-          images:[],
-        }),
+        body: JSON.stringify(body),
       });
 
-      if (!auctionResponse.ok) {
-        const errorData = await auctionResponse.json();
-        setError(errorData.error || "Une erreur est survenue.");
-        return;
+      if (response.ok) {
+        const newAuction = await response.json();
+        setAuctions((prev) => [...prev, newAuction]); // Actualiser la liste
+        form.reset();
+        setShowPopup(false); // Fermer le popup
+        console.log("Enchère créée avec succès !");
+      } else {
+        console.log("Une erreur est survenue lors de la création de l'enchère.");
       }
-
-      const createdAuction = await auctionResponse.json();
-
-      // Si une image est attachée, uploader l'image
-      if (newAuction.image) {
-        const formData = new FormData();
-        formData.append("auctionId", createdAuction.id);
-        formData.append("image", newAuction.image);
-
-        const imageResponse = await fetch("/api/auctions/upload", {
-          method: "POST",
-          body: formData,
-        });
-
-        if (!imageResponse.ok) {
-          const errorData = await imageResponse.json();
-          setError(errorData.error || "Erreur lors de l'upload de l'image.");
-          return;
-        }
-      }
-
-      // Actualiser la liste des enchères
-      setAuctions((prev) => [...prev, createdAuction]);
-      setShowPopup(false);
-      setNewAuction({
-        title: "",
-        description: "",
-        startPrice: "",
-        minIncr: "",
-        startDate: "",
-        endDate: "",
-        image: null,
-      });
-    } catch (err) {
-      console.error("Erreur lors de la création de l'enchère :", err);
-      setError("Une erreur est survenue.");
+    } catch (error) {
+      console.error("Erreur :", error);
+      console.log("Une erreur est survenue.");
     }
-  };
+  }
 
   return (
     <>
-      <Navbar />
       <div className="container mx-auto py-8">
         <h1 className="text-3xl font-bold text-center mb-6">Tableau de Bord Administrateur</h1>
 
@@ -137,7 +92,7 @@ export default function AdminDashboard() {
                   />
                 </td>
                 <td className="px-4 py-2">{auction.title}</td>
-                <td className="px-4 py-2">${auction.startPrice}</td>
+                <td className="px-4 py-2">{auction.startPrice} €</td>
                 <td className="px-4 py-2">
                   <button className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-700 transition">
                     Modifier
@@ -157,88 +112,64 @@ export default function AdminDashboard() {
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
           <div className="bg-white p-6 rounded-lg shadow-lg w-96">
             <h2 className="text-2xl font-bold mb-4">Créer une Enchère</h2>
-            {error && <p className="text-red-500">{error}</p>}
-            <form onSubmit={handleCreateAuction} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label>Titre</label>
+                <label htmlFor="title">Titre</label>
                 <input
                   type="text"
-                  value={newAuction.title}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, title: e.target.value })
-                  }
+                  id="title"
+                  name="title"
                   className="w-full p-2 border rounded"
                   required
                 />
               </div>
               <div>
-                <label>Description</label>
+                <label htmlFor="description">Description</label>
                 <textarea
-                  value={newAuction.description}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, description: e.target.value })
-                  }
+                  id="description"
+                  name="description"
                   className="w-full p-2 border rounded"
                   required
                 />
               </div>
               <div>
-                <label>Prix de départ</label>
+                <label htmlFor="startPrice">Prix de départ</label>
                 <input
                   type="number"
-                  value={newAuction.startPrice}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, startPrice: e.target.value })
-                  }
+                  id="startPrice"
+                  name="startPrice"
                   className="w-full p-2 border rounded"
                   required
                 />
               </div>
               <div>
-                <label>Incrémentation minimale</label>
+                <label htmlFor="minIncr">Incrémentation minimale</label>
                 <input
                   type="number"
-                  value={newAuction.minIncr}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, minIncr: e.target.value })
-                  }
+                  id="minIncr"
+                  name="minIncr"
                   className="w-full p-2 border rounded"
                   required
                 />
               </div>
               <div>
-                <label>Date de début</label>
+                <label htmlFor="startDate">Date de début</label>
                 <input
                   type="datetime-local"
-                  value={newAuction.startDate}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, startDate: e.target.value })
-                  }
+                  id="startDate"
+                  name="startDate"
                   className="w-full p-2 border rounded"
                   required
                 />
               </div>
               <div>
-                <label>Date de fin</label>
+                <label htmlFor="endDate">Date de fin</label>
                 <input
                   type="datetime-local"
-                  value={newAuction.endDate}
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, endDate: e.target.value })
-                  }
+                  id="endDate"
+                  name="endDate"
                   className="w-full p-2 border rounded"
                   required
-                />
-              </div>
-              <div>
-                <label>Image</label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={(e) =>
-                    setNewAuction({ ...newAuction, image: e.target.files[0] })
-                  }
-                  className="w-full p-2 border rounded"
                 />
               </div>
               <div className="flex justify-end space-x-2">
@@ -260,8 +191,6 @@ export default function AdminDashboard() {
           </div>
         </div>
       )}
-
-      <Footer />
     </>
   );
 }

@@ -127,3 +127,47 @@ footer h5 {
     --radius: 0.5rem;
   }
 }
+
+
+/* GRADIENT EFFECT */
+/* COLOR GRADIENT */
+.gradient-color {
+  background: rgb(229,65,41);
+background: linear-gradient(90deg, rgba(229,65,41,1) 0%, rgba(234,111,17,1) 10%, rgba(255,231,24,1) 25%, rgba(136,187,21,1) 40%, rgba(53,159,43,1) 55%, rgba(19,161,174,1) 70%, rgba(16,139,200,1) 85%, rgba(13,56,137,1) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  color: transparent;
+}
+
+/* BORDER GRADIENT */
+.gradient-border-footer {
+  position: relative;
+  border-radius: 15px;
+  overflow: hidden;
+  z-index: 1;
+}
+
+.gradient-border-footer::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 15px;
+  padding: 2px;
+  background: rgb(229,65,41);
+background: linear-gradient(90deg, rgba(229,65,41,1) 0%, rgba(234,111,17,1) 10%, rgba(255,231,24,1) 25%, rgba(136,187,21,1) 40%, rgba(53,159,43,1) 55%, rgba(19,161,174,1) 70%, rgba(16,139,200,1) 85%, rgba(13,56,137,1) 100%);
+  -webkit-mask:
+    linear-gradient(#fff 0%, #fff 100%) content-box,
+    linear-gradient(#fff 0%, #fff 100%);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  z-index: -1;
+}
+
+.gradient-border-footer,
+.gradient-border-footer::before {
+  border-radius: 15px 15px 0 0;
+}
