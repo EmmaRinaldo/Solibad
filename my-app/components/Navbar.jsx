@@ -110,7 +110,13 @@ const Navbar = () => {
                     <>
                         <Link
                             href="/login"
-                            className="text-xl font-medium text-gray-700 hover:text-blue-700"
+                            className="text-xl font-medium text-gray-700 hover:bg-black hover:text-white " style={{
+                                borderWidth: "3px", // Épaisseur de la bordure
+                                borderStyle: "solid", // Style de la bordure
+                                borderImageRadius: "62px", // Coins arrondis 
+                                borderImageSource: `linear-gradient(90deg, rgba(229,65,41,1) 0%, rgba(234,111,17,1) 10%, rgba(255,231,24,1) 25%, rgba(136,187,21,1) 40%, rgba(53,159,43,1) 55%, rgba(19,161,174,1) 70%, rgba(16,139,200,1) 85%, rgba(13,56,137,1) 100%)`,
+                                borderImageSlice: 1, // Utilisation correcte du dégradé
+                              }} 
                         >
                             Se connecter
                         </Link>
