@@ -112,7 +112,13 @@ export default function AuctionDetail() {
 
             {/* Colonne droite (Détails du produit et enchères) */}
             <div className="w-full lg:w-5/12">
-              <div className="bg-white shadow-lg p-6 sm:p-8 rounded-lg">
+              <div className="backdrop-blur-md bg-white/40 border-t border-white/20 rounded-lg shadow-lg p-6 sm:p-8 rounded-lg" style={{
+                  borderWidth: "3px", // Épaisseur de la bordure
+                  borderStyle: "solid", // Style de la bordure
+                  borderImageRadius: "62px", // Coins arrondis
+                  borderImageSource: `linear-gradient(90deg, rgba(229,65,41,1) 0%, rgba(234,111,17,1) 10%, rgba(255,231,24,1) 25%, rgba(136,187,21,1) 40%, rgba(53,159,43,1) 55%, rgba(19,161,174,1) 70%, rgba(16,139,200,1) 85%, rgba(13,56,137,1) 100%)`,
+                  borderImageSlice: 1, // Utilisation correcte du dégradé
+                }}>
                 {/* Informations principales */}
                 <div className="mb-6">
                   <h1 className="text-lg sm:text-xl font-bold mb-4">{auction.title}</h1>
@@ -134,7 +140,7 @@ export default function AuctionDetail() {
                     />
                     <button
                       type="submit"
-                      className="w-full py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition"
+                      className="w-full py-3 bg-black text-white font-medium rounded-md hover:bg-blue-600 transition"
                     >
                       Soumettre une enchère
                     </button>
