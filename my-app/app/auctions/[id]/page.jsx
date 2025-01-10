@@ -1,44 +1,99 @@
-// app/auctions/[id]/page.jsx
+//app/auctions/[id]/page.jsx
 
 "use client";
 
 import { useEffect, useState } from "react";
-import { useParams } from "next/navigation"; // Récupère params comme promesse
-import Footer from "../../../components/Footer";
+import { useParams, useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import { differenceInSeconds, formatDuration, intervalToDuration } from "date-fns";
 import Navbar from "../../../components/Navbar";
+import Footer from "../../../components/Footer";
 import { CircleChevronLeft } from "lucide-react";
-import { useRouter } from "next/navigation";
 
 export default function AuctionDetail() {
-  const { id } = useParams(); // Récupère "id" correctement
+  const { id } = useParams();
   const [auction, setAuction] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [bidAmount, setBidAmount] = useState("");
+  const [timeRemaining, setTimeRemaining] = useState("");
+  const { data: session, status } = useSession();
   const router = useRouter();
 
+  // Récupérer les détails de l'enchère
   useEffect(() => {
-    const fetchAuction = async () => {
+    const fetchAuctionDetails = async () => {
       try {
         const response = await fetch(`/api/auctions?id=${id}`);
-        const data = await response.json();
-
-        if (data.error) {
-          setAuction(null); // Gérer une réponse avec une erreur
+        if (response.ok) {
+          const data = await response.json();
+          setAuction(data);
+          calculateTimeRemaining(data.endDate);
         } else {
-          setAuction(data); // Charger les données de l'enchère
+          setAuction(null);
         }
       } catch (error) {
         console.error("Erreur lors de la récupération de l'enchère :", error);
-        setAuction(null); // Gérer les erreurs réseau
+        setAuction(null);
       } finally {
         setLoading(false);
       }
     };
 
-    if (id) {
-      fetchAuction();
-    }
+    fetchAuctionDetails();
   }, [id]);
+
+  // Calculer le temps restant
+  const calculateTimeRemaining = (endDate) => {
+    const interval = setInterval(() => {
+      const now = new Date();
+      const end = new Date(endDate);
+      const diffInSeconds = differenceInSeconds(end, now);
+
+      if (diffInSeconds <= 0) {
+        clearInterval(interval);
+        setTimeRemaining("L'enchère est terminée.");
+      } else {
+        const duration = intervalToDuration({ start: now, end });
+        setTimeRemaining(formatDuration(duration, { format: ["days", "hours", "minutes", "seconds"] }));
+      }
+    }, 1000);
+
+    return () => clearInterval(interval);
+  };
+
+  // Soumission d'une enchère
+  const handleBidSubmit = async (e) => {
+    e.preventDefault();
+    if (!session) {
+      alert("Veuillez vous connecter pour enchérir.");
+      router.push("/login");
+      return;
+    }
+
+    try {
+      const response = await fetch("/api/bids", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: session.user.id,
+          auctionId: id,
+          bidAmount: parseFloat(bidAmount),
+        }),
+      });
+
+      if (response.ok) {
+        const updatedAuction = await response.json();
+        setAuction(updatedAuction.updatedAuction);
+        alert("Votre enchère a été placée !");
+        setBidAmount("");
+      } else {
+        const errorData = await response.json();
+        alert(errorData.error || "Erreur lors de la soumission de l'enchère.");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la soumission de l'enchère :", error);
+    }
+  };
 
   if (loading) {
     return (
@@ -63,99 +118,68 @@ export default function AuctionDetail() {
   return (
     <>
       <Navbar />
-      <div className="navbar-padding-protection"></div>
-
-
-      <section className="py-8 sm:py-12 bg-[#F2F0F1]">
+      <section className="py-8 sm:py-12 bg-gray-100">
         <div className="container mx-auto px-4">
-          <div className="mb-5">
-            <button onClick={() => router.back()} className="flex items-center hover:underline">
-              <CircleChevronLeft className="" />
-            </button>
+          <button onClick={() => router.back()} className="flex items-center mb-4 text-blue-500">
+            <CircleChevronLeft className="mr-2" />
+            Retour
+          </button>
 
+          <div className="mb-6">
+            <p className="text-lg font-semibold text-red-500">{timeRemaining}</p>
           </div>
+
           <div className="flex flex-col lg:flex-row gap-8">
-            {/* Colonne gauche (Images du produit) */}
-            <div className="w-full lg:w-7/12">
-              <div className="relative">
-                <div className="swiper swiper-initialized swiper-horizontal swiper-pointer-events">
-                  <div className="swiper-wrapper">
-                    {/* Image principale */}
-                    <div className="swiper-slide">
-                      {auction.images && auction.images.length > 0 ? (
-                        <div className="relative w-55 h-48 thumb">
-                          <Image
-                            alt={auction.title}
-                            className="w-full h-auto object-contain rounded-lg shadow-md"
-                            width={450}
-                            height={450}
-                            src={auction.images[0]}
-                          />
-                        </div>
-                      ) : (
-                        <div className="w-full h-48 rounded-lg shadow-md bg-gray-200 flex items-center justify-center thumb">
-                          <p className="text-gray-500">Pas d'image disponible</p>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                  {/* Boutons de navigation */}
-                  <button className="swiper-button-prev absolute left-0 top-1/2 transform -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md">
-                    &#8249;
-                  </button>
-                  <button className="swiper-button-next absolute right-0 top-1/2 transform -translate-y-1/2 z-10 bg-white p-2 rounded-full shadow-md">
-                    &#8250;
-                  </button>
+            {/* Image principale */}
+            <div className="w-full lg:w-1/2">
+              {auction.images?.length > 0 ? (
+                <img src={auction.images[0]} alt={auction.title} className="rounded-lg shadow-md" />
+              ) : (
+                <div className="w-full h-64 bg-gray-200 flex items-center justify-center rounded-lg">
+                  <p className="text-gray-500">Pas d'image disponible</p>
                 </div>
-              </div>
+              )}
             </div>
 
-            {/* Colonne droite (Détails du produit et enchères) */}
-            <div className="w-full lg:w-5/12">
-              <div className="bg-white shadow-lg p-6 sm:p-8 rounded-lg">
-                {/* Informations principales */}
-                <div className="mb-6">
-                  <h1 className="text-lg sm:text-xl font-bold mb-4">{auction.title}</h1>
-                  <ul className="space-y-4">
-                    <li className="flex justify-between">
-                      <span>Prix actuel</span>
-                      <span className="text-xl font-semibold text-blue-600">{auction.ActualBid} €</span>
-                    </li>
-                  </ul>
-                </div>
+            {/* Détails de l'enchère */}
+            <div className="w-full lg:w-1/2 bg-white p-6 rounded-lg shadow-md">
+              <h1 className="text-2xl font-bold">{auction.title}</h1>
+              <p className="text-gray-600 mt-2">{auction.description}</p>
+              <p className="text-blue-600 text-lg font-semibold mt-4">Prix actuel : {auction.ActualBid} €</p>
 
-                {/* Formulaire d'enchère */}
-                <div className="mb-6">
-                  <form action="#" className="space-y-4">
-                    <input
-                      type="text"
-                      placeholder="Entrez votre montant d'enchère"
-                      className="w-full p-3 border rounded-md focus:ring-2 focus:ring-blue-500 focus:outline-none"
-                    />
-                    <button
-                      type="submit"
-                      className="w-full py-3 bg-blue-500 text-white font-medium rounded-md hover:bg-blue-600 transition"
-                    >
-                      Soumettre une enchère
-                    </button>
-                  </form>
-                </div>
-              </div>
+              {/* Formulaire ou bouton "Se connecter" */}
+              {status === "authenticated" ? (
+                <form onSubmit={handleBidSubmit} className="mt-4 space-y-4">
+                  <input
+                    type="number"
+                    placeholder="Entrez votre enchère"
+                    value={bidAmount}
+                    onChange={(e) => setBidAmount(e.target.value)}
+                    className="w-full p-3 border rounded-md"
+                    required
+                  />
+                  <button type="submit" className="w-full bg-blue-500 text-white py-2 rounded-md">
+                    Soumettre une enchère
+                  </button>
+                </form>
+              ) : (
+                <button onClick={() => router.push("/login")} className="w-full bg-gray-500 text-white py-2 rounded-md mt-4">
+                  Se connecter pour enchérir
+                </button>
+              )}
             </div>
           </div>
-          <div className="flex flex-col lg:flex-row gap-8">
-            <h2 className="text-xl font-semibold mt-4">Surenchères</h2>
-            <ul className="space-y-4">
-              {bids
-                .sort((a, b) => b.lastBid - a.lastBid)
-                .map(bid => (
-                  <li key={bid.id} className="border p-4 rounded shadow">
-                    <p className="text-gray-700">Montant: {bid.lastBid}</p>
-                    <p className="text-gray-700">Utilisateur: {users[bid.userId]?.name} {users[bid.userId]?.lastname}</p>
-                  </li>
-                ))}
-            </ul>
-          </div>
+
+          {/* Liste des surenchères */}
+          <h2 className="text-xl font-bold mt-8">Surenchères</h2>
+          <ul className="mt-4 space-y-4">
+            {auction.bids?.map((bid) => (
+              <li key={bid.id} className="bg-white p-4 rounded-lg shadow-md border">
+                <p>Montant : {bid.lastBid} €</p>
+                <p>Utilisateur : {bid.user?.name || "Anonyme"}</p>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
       <Footer />

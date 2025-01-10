@@ -1,6 +1,8 @@
 "use client";
 
+import { LogOut } from "lucide-react";
 import { useState, useEffect } from "react";
+import { signOut } from "next-auth/react";
 
 export default function AdminDashboard() {
   const [auctions, setAuctions] = useState([]);
@@ -59,7 +61,17 @@ export default function AdminDashboard() {
   return (
     <>
       <div className="container mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-6">Tableau de Bord Administrateur</h1>
+        <div className="flex items-center mb-6">
+          <h1 className="text-3xl font-bold text-center ">Tableau de Bord Administrateur</h1>
+          <button
+            onClick={() => signOut({ callbackUrl: "/admin-login" })}
+            className="text-gray-600 hover:text-gray-900 pl-3"
+            title="Se déconnecter"
+          >
+            <LogOut className="h-6 w-6" />
+          </button>
+        </div>
+
 
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-xl font-bold">Liste des Enchères</h2>
