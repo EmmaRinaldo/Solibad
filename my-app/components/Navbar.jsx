@@ -112,7 +112,7 @@ const Navbar = () => {
                             Se connecter
                         </Link>
                         <Link
-                            href="/signup"
+                            href="/register"
                             className="text-xl font-medium text-gray-700 hover:text-blue-700"
                         >
                             S'inscrire

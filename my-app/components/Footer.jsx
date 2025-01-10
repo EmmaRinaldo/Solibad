@@ -48,7 +48,7 @@ const Footer = () => {
             <ul className="space-y-2">
               <li>
                 <Link
-                  href="/conditions-generales-utilisation"
+                  href="/CGU"
                   className="text-gray-600 hover:text-blue-700"
                   target="_blank"
                   aria-label="Lien vers les conditions générales d'utilisation"
