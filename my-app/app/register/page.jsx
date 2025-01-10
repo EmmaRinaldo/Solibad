@@ -18,6 +18,7 @@ import {
 } from "../../components/ui/command";
 import { Button } from "../../components/ui/button";
 import { Check, ChevronsUpDown } from "lucide-react";
+import Link from "next/link";
 
 export default function Register() {
   const [form, setForm] = useState({
@@ -278,6 +279,7 @@ export default function Register() {
           >
             S'inscrire
           </button>
+          <p>Vous avez un compte ? <Link href="/login">Connectez-vous</Link></p>
         </div>
       </form>
     </div>

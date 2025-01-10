@@ -3,6 +3,7 @@
 "use client";
 
 import { signIn } from "next-auth/react";
+import Link from "next/link";
 import { useState } from "react";
 
 export default function Login() {
@@ -13,14 +14,14 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-  
+
     try {
       const result = await signIn("user-credentials", {
         email,
         password,
         redirect: false, // Désactive la redirection automatique pour afficher les erreurs
       });
-  
+
       if (result.error) {
         console.error("Erreur lors de la connexion :", result.error);
         setError("Invalid email or password");
@@ -33,7 +34,7 @@ export default function Login() {
       setError("An error occurred during login");
     }
   };
-  
+
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
@@ -73,6 +74,7 @@ export default function Login() {
           >
             Se Connecter
           </button>
+          <p>Vous n'avez pas de compte ? <Link href="/register">Inscrivez vous</Link></p>
         </form>
       </div>
     </div>

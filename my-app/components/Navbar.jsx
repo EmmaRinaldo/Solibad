@@ -42,12 +42,6 @@ const Navbar = () => {
 
             {/* Desktop Navigation */}
             <div className="hidden md:flex flex-grow justify-center items-center space-x-6">
-                <Link
-                    href="/a-propos"
-                    className="text-xl font-medium text-gray-700 hover:text-blue-700"
-                >
-                    À propos
-                </Link>
                 <div className="relative group">
                     <button className="text-xl font-medium text-gray-700 hover:text-blue-700">
                         Nos Sites
@@ -161,13 +155,6 @@ const Navbar = () => {
                         </button>
                     </div>
 
-                    <Link
-                        href="/a-propos"
-                        className="text-lg font-medium text-gray-700 hover:text-gray-900"
-                        onClick={toggleMenu}
-                    >
-                        À propos
-                    </Link>
                     <div>
                         <p className="text-lg font-medium text-gray-700">Nos Sites</p>
                         <ul className="mt-2 pl-4 space-y-2">
