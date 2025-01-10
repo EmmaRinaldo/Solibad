@@ -21,7 +21,7 @@ const Header = () => {
                 Attrapez l’affaire, envoyez le volant !
               </h1>
               <p className="text-sm sm:text-base lg:text-lg max-w-[400px] sm:max-w-[500px] lg:max-w-[600px] text-black">
-                BidMaster est la plateforme ultime pour acheter et vendre des articles 
+                La plateforme ultime pour acheter et vendre des articles de Badminton
                 en toute sécurité via des enchères en ligne en temps réel. 
                 Rejoignez-nous dès aujourd'hui et vivez l'excitation de trouver vos objets de rêve.
               </p>
