@@ -1,5 +1,3 @@
-// api/auth/[...nextauth]/route.js
-
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
@@ -18,7 +16,6 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Recherche l'utilisateur dans la table User
         const user = await prisma.user.findUnique({
           where: { email: credentials.email },
         });
@@ -27,7 +24,6 @@ const authOptions = {
           throw new Error("No user found with this email");
         }
 
-        // Vérifie le mot de passe
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           user.password
@@ -37,7 +33,7 @@ const authOptions = {
           throw new Error("Invalid password");
         }
 
-        return user; // Retourne l'utilisateur si tout est valide
+        return user;
       },
     }),
 
@@ -50,7 +46,6 @@ const authOptions = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        // Recherche l'admin dans la table Admin
         const admin = await prisma.admin.findUnique({
           where: { email: credentials.email },
         });
@@ -59,7 +54,6 @@ const authOptions = {
           throw new Error("No admin found with this email");
         }
 
-        // Vérifie le mot de passe
         const isPasswordValid = await bcrypt.compare(
           credentials.password,
           admin.password
@@ -69,24 +63,18 @@ const authOptions = {
           throw new Error("Invalid password");
         }
 
-        return admin; // Retourne l'admin si tout est valide
+        return admin;
       },
     }),
   ],
   session: {
-    strategy: "jwt", // Utilise des tokens JWT pour les sessions
+    strategy: "jwt",
   },
   callbacks: {
     async jwt({ token, user, account }) {
       if (user) {
         token.id = user.id;
-
-        // Définit le rôle en fonction du provider utilisé
-        if (account?.provider === "admin-credentials") {
-          token.role = "admin";
-        } else {
-          token.role = "user";
-        }
+        token.role = account?.provider === "admin-credentials" ? "admin" : "user";
       }
 
       return token;
@@ -94,7 +82,7 @@ const authOptions = {
     async session({ session, token }) {
       if (token) {
         session.user.id = token.id;
-        session.user.role = token.role; // Ajoute le rôle à la session
+        session.user.role = token.role;
       }
 
       return session;
@@ -103,7 +91,6 @@ const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 };
 
-export { authOptions };
-
-export const GET = NextAuth(authOptions);
-export const POST = NextAuth(authOptions);
+// Export des handlers pour Next.js
+const handler = NextAuth(authOptions);
+export { handler as GET, handler as POST };
