@@ -167,6 +167,7 @@ export default function AuctionDetail() {
                   Se connecter pour enchérir
                 </button>
               )}
+
             </div>
           </div>
 
