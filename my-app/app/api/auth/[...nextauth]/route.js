@@ -1,3 +1,5 @@
+//app/api/auth/[...nextauth]/route.js
+
 import NextAuth from "next-auth";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";

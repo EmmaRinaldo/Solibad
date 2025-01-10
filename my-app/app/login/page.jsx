@@ -13,23 +13,27 @@ export default function Login() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
-
+  
     try {
       const result = await signIn("user-credentials", {
         email,
         password,
-        redirect: true,
-        callbackUrl: "/", // Redirige après connexion (modifie si nécessaire)
+        redirect: false, // Désactive la redirection automatique pour afficher les erreurs
       });
-
-      if (!result.ok) {
+  
+      if (result.error) {
+        console.error("Erreur lors de la connexion :", result.error);
         setError("Invalid email or password");
+      } else {
+        console.log("Connexion réussie :", result);
+        window.location.href = "/"; // Redirige après connexion
       }
     } catch (err) {
-      console.log(err)
+      console.error("Erreur lors de la connexion :", err);
       setError("An error occurred during login");
     }
   };
+  
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
