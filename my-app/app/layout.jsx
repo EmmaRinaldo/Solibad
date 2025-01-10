@@ -3,11 +3,13 @@
 
 import "../styles/global.css";
 import SessionProviderWrapper from "../components/SessionProviderWrapper";
+import { CurrencyProvider } from "../lib/CurrencyContext.js";
+import CurrencyDropdown from "../components/CurrencyDropdown";
 
 
 
 const layout = ({ children }) => {
-  
+
 
   return (
     <html lang="fr">
@@ -16,11 +18,12 @@ const layout = ({ children }) => {
         <link rel="icon" href="../assets/favicon.ico" type="image/x-icon" />
       </head>
       <body>
-        <SessionProviderWrapper>
-          <main>
-            {children}
-          </main>
-        </SessionProviderWrapper>
+        <CurrencyProvider>
+          <SessionProviderWrapper>
+            <main>{children}</main>
+            <CurrencyDropdown />
+          </SessionProviderWrapper>
+        </CurrencyProvider>
       </body>
     </html>
   );
