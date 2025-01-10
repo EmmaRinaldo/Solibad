@@ -52,7 +52,7 @@ const Navbar = () => {
                     <button className="text-xl font-medium text-gray-700 hover:text-blue-700">
                         Nos Sites
                     </button>
-                    <div 
+                    <div
                         className="min-w-[150px] absolute hidden group-hover:block bg-white shadow-lg p-3 rounded-lg"
                         style={{ borderRadius: 12 }}
                     >
@@ -91,10 +91,13 @@ const Navbar = () => {
             <div className="hidden md:flex items-center space-x-4">
                 {session ? (
                     <div className="flex items-center space-x-2">
-                        <User className="h-6 w-6 text-gray-600" />
-                        <span className="text-xl font-medium text-gray-700">
-                            {session.user.name} {session.user.lastname}
-                        </span>
+                        <Link href="/profil">
+                            <User className="h-6 w-6 text-gray-600" />
+                            <span className="text-xl font-medium text-gray-700">
+                                {session.user.name} {session.user.lastname}
+                            </span>
+                        </Link>
+
                         <button
                             onClick={() => signOut({ callbackUrl: "/" })}
                             className="text-gray-600 hover:text-gray-900"
@@ -193,9 +196,12 @@ const Navbar = () => {
                     </Link>
                     {session ? (
                         <div className="flex flex-col space-y-4">
-                            <span className="text-lg font-medium text-gray-700">
-                                {session.user.name} {session.user.lastname}
-                            </span>
+                            <Link href="/profil">
+                                <User className="h-6 w-6 text-gray-600" />
+                                <span className="text-xl font-medium text-gray-700">
+                                    {session.user.name} {session.user.lastname}
+                                </span>
+                            </Link>
                             <button
                                 onClick={() => {
                                     toggleMenu();
