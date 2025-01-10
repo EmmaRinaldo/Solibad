@@ -153,7 +153,7 @@ export default function AuctionDetail() {
                   <input
                     type="number"
                     placeholder="Entrez votre enchère"
-                    value={bidAmount}
+                    defaultValue={auction.ActualBid + auction.minIncr}
                     onChange={(e) => setBidAmount(e.target.value)}
                     className="w-full p-3 border rounded-md"
                     required
