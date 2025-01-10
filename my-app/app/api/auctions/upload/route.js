@@ -17,7 +17,7 @@ export async function POST(req) {
   try {
     const formData = await req.formData();
     const auctionId = formData.get("auctionId");
-    const imageFile = formData.get("image"); // L'image envoyée depuis le frontend
+    const imageFile = formData.get("image");
 
     if (!auctionId || !imageFile) {
       return new Response(
@@ -26,16 +26,21 @@ export async function POST(req) {
       );
     }
 
+    // Convertir l'image reçue en fichier accessible à Cloudinary
+    const imageBuffer = await imageFile.arrayBuffer();
+    const base64Image = Buffer.from(imageBuffer).toString("base64");
+    const imageData = `data:${imageFile.type};base64,${base64Image}`;
+
     // Upload de l'image vers Cloudinary
-    const uploadedImage = await cloudinary.uploader.upload(imageFile, {
-      folder: "auctions", // Dossier dans Cloudinary
+    const uploadedImage = await cloudinary.uploader.upload(imageData, {
+      folder: "auctions",
     });
 
-    // Enregistrer l'URL de l'image dans la base de données
+    // Mise à jour de l'enchère avec l'image téléchargée
     const updatedAuction = await prisma.auction.update({
       where: { id: auctionId },
       data: {
-        images: { push: uploadedImage.secure_url }, // Ajoute l'URL à la liste d'images
+        images: { push: uploadedImage.secure_url }, // Ajouter l'image à la liste des images
       },
     });
 
