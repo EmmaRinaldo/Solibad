@@ -49,7 +49,7 @@ export async function POST(req) {
             return new Response(JSON.stringify({ error: `La nouvelle enchère doit être supérieure de ${auction.minIncr} au prix actuel` }), { status: 400 });
         }
 
-        if (differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) < 0) {
+        if (differenceInSeconds(new Date(), auction.endDate) < 0) {
           const existingBid = await prisma.bid.findFirst({
               where: {
                   userId: userId,
@@ -85,7 +85,7 @@ export async function POST(req) {
           return new Response(JSON.stringify({ newBid, updatedAuction }), { status: 201 });
         }
 
-        if (0 < differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) <= 300) {
+        if (0 < differenceInSeconds(new Date(), auction.endDate) <= 300) {
           const existingBid = await prisma.bid.findFirst({
             where: {
                 userId: userId,
@@ -121,7 +121,7 @@ export async function POST(req) {
         return new Response(JSON.stringify({ newBid, updatedAuction }), { status: 201 });
         }
 
-        if (differenceInSeconds(new Date() - new Date().getTimezoneOffset() * 60000, auction.endDate) > 300) {
+        if (differenceInSeconds(new Date(), auction.endDate) > 300) {
           return new Response(JSON.stringify({ error: `l'enchère est finie` }), { status: 400 });
         }
 

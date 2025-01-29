@@ -19,7 +19,10 @@ export async function GET(req) {
         },
         orderBy: { startDate: "asc" },
       });
-      return new Response(JSON.stringify(activeAuctions), { status: 200 });
+      return new Response(
+        JSON.stringify(activeAuctions || []), // Assurez-vous que c'est un tableau
+        { status: 200 }
+      );
     }
 
     // Récupérer une enchère spécifique avec les bids
